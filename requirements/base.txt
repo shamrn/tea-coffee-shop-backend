@@ -1,0 +1,11 @@
+# Web-framework
+Django==4.1.1
+
+# Adapter for PostgreSQL
+psycopg2-binary==2.9.3
+
+# REST-API framework (DRF)
+djangorestframework==3.13.1
+
+# Django-filter is a reusable `Django` application for allowing users to filter querysets dynamically
+django-filter==21.1
