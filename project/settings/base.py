@@ -10,7 +10,6 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
-import os
 import sys
 from os import environ
 from pathlib import Path
@@ -53,9 +52,12 @@ EXTERNAL_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'django_filters',
+    'adminsortable2',
 ]
 
-PROJECT_APPS = []
+PROJECT_APPS = [
+    'product',
+]
 
 
 INSTALLED_APPS = DJANGO_APPS + EXTERNAL_APPS + PROJECT_APPS

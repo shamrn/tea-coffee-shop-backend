@@ -1,3 +1,82 @@
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 
-# Create your models here.
+from extension.models import BaseMixin, SortableMixin
+
+
+class Category(BaseMixin, SortableMixin):
+    """Category model"""
+
+    class TypeChoice(models.IntegerChoices):
+        """Type choice"""
+
+        COFFEE: int = 0, _('Coffee')
+        TEA: int = 1, _('Tea')
+
+    type = models.PositiveSmallIntegerField(choices=TypeChoice.choices, db_index=True,
+                                            verbose_name=_('Type product'))
+    name = models.CharField(max_length=32, verbose_name=_('Name'))
+
+    def __str__(self):
+        """Implement str dunder"""
+
+        return self.name
+
+    class Meta:
+        """Meta class"""
+
+        ordering = ['sorting']
+        verbose_name = _('category')
+        verbose_name_plural = _('categories')
+
+
+class Product(BaseMixin, SortableMixin):
+    """Product model"""
+
+    category = models.ManyToManyField(to=Category, related_name='category_products',
+                                      verbose_name=_('Categories'))
+    name = models.CharField(max_length=100, verbose_name=_('Name'), db_index=True)
+    description = models.TextField(verbose_name=_('Description'))
+    price = models.DecimalField(max_digits=8, decimal_places=2, verbose_name=_('Price'))
+    volume = models.FloatField(_('Volume'), null=True)
+
+    is_hit = models.BooleanField(default=False, db_index=True,
+                                 verbose_name=_('Is hit'))
+    is_new = models.BooleanField(default=False, db_index=True,
+                                 verbose_name=_('Is new'))
+    is_active = models.BooleanField(default=True, db_index=True,
+                                    verbose_name=_('Is active'),
+                                    help_text=_('If unchecked, the product will not be displayed'))
+
+    def __str__(self):
+        """Implement str dunder"""
+
+        return self.name
+
+    class Meta:
+        """Meta class"""
+
+        ordering = ['sorting']
+        verbose_name = _('product')
+        verbose_name_plural = _('products')
+
+
+class ProductImage(BaseMixin, SortableMixin):
+    """Product Image model"""
+
+    product = models.ForeignKey(to=Product, on_delete=models.CASCADE,
+                                related_name='product_images',
+                                verbose_name=_('Product image'))
+    image = models.ImageField(_('Image'))
+
+    def __str__(self):
+        """Implement str dunder"""
+
+        return f'%s: {self.id}' % _('Entry number')
+
+    class Meta:
+        """Meta class"""
+
+        ordering = ['sorting']
+        verbose_name = _('product image')
+        verbose_name_plural = _('product images')
