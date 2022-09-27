@@ -13,7 +13,7 @@ Requirements:
     - `requirements/base.txt`
 
 Source repositories:
-- Backend — 
+- Backend — https://github.com/shamrn/tea-coffee-shop-backend
 - Mobile - 
 
 ----
