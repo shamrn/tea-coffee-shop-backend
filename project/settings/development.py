@@ -1,5 +1,6 @@
 from .base import *  # NOQA
 
+ALLOWED_HOSTS = ['vladislav111.pythonanywhere.com']
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
