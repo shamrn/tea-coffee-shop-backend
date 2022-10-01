@@ -1,3 +1,5 @@
+from typing import Union
+
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
@@ -30,6 +32,26 @@ class Category(BaseMixin, SortableMixin):
         verbose_name_plural = _('categories')
 
 
+class ProductQuerySet(models.QuerySet):
+    """Query set for `Product` model"""
+
+    def is_active(self) -> Union['ProductQuerySet', models.QuerySet]:
+        """Filter by is active"""
+
+        return self.filter(is_active=True)
+
+    def prefetch_main_product_image(self) -> Union['ProductQuerySet', models.QuerySet]:
+        """Prefetch with main `ProductImage` model"""
+
+        return self.prefetch_related(
+            models.Prefetch(
+                queryset=ProductImage.objects.annotate_min_sorting_value(),
+                lookup='product_images',
+                to_attr='_product_main_image_prefetched'
+            )
+        )
+
+
 class Product(BaseMixin, SortableMixin):
     """Product model"""
 
@@ -48,6 +70,8 @@ class Product(BaseMixin, SortableMixin):
                                     verbose_name=_('Is active'),
                                     help_text=_('If unchecked, the product will not be displayed'))
 
+    objects = models.Manager.from_queryset(ProductQuerySet)()
+
     def __str__(self):
         """Implement str dunder"""
 
@@ -60,6 +84,34 @@ class Product(BaseMixin, SortableMixin):
         verbose_name = _('product')
         verbose_name_plural = _('products')
 
+    @property
+    def image(self):
+        """Return main image"""
+
+        if hasattr(self, '_product_main_image_prefetched'):
+            return getattr(next(iter(self._product_main_image_prefetched), None), 'image', None)
+
+        return getattr(self.product_images.first(), 'image', None)
+
+    @property
+    def product_main_image_prefetched(self) -> 'ProductImage':
+        """Return `ProductImage` queryset"""
+
+        if hasattr(self, '_product_main_image_prefetched'):
+            return self._product_main_image_prefetched
+
+        return self.product_images.all()
+
+
+class ProductImageQuerySet(models.QuerySet):
+    """Query set 'ProductImage' model"""
+
+    def annotate_min_sorting_value(self) -> Union['ProductImageQuerySet', models.QuerySet]:
+        """Annotate min sorting value"""
+
+        return (self.annotate(min_sorting_value=models.Min('product__product_images__sorting'))
+                .filter(sorting=models.F('min_sorting_value')))
+
 
 class ProductImage(BaseMixin, SortableMixin):
     """Product Image model"""
@@ -68,6 +120,8 @@ class ProductImage(BaseMixin, SortableMixin):
                                 related_name='product_images',
                                 verbose_name=_('Product image'))
     image = models.ImageField(_('Image'))
+
+    objects = models.Manager.from_queryset(ProductImageQuerySet)()
 
     def __str__(self):
         """Implement str dunder"""
