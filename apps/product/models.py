@@ -4,6 +4,7 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 from extension.models import BaseMixin, SortableMixin
+from extension.orm import greatest_trigram_similarity
 
 
 class Category(BaseMixin, SortableMixin):
@@ -49,6 +50,16 @@ class ProductQuerySet(models.QuerySet):
                 lookup='product_images',
                 to_attr='_product_main_image_prefetched'
             )
+        )
+
+    def annotate_trigram_similarity(
+            self, value: str) -> Union['ProductQuerySet', models.QuerySet]:
+        """Search by 'name', 'description' and 'category.name' fields."""
+
+        return self.annotate(
+            trigram_similarity=greatest_trigram_similarity(
+                fields=('name', 'description', 'category__name'),
+                value=value)
         )
 
 
