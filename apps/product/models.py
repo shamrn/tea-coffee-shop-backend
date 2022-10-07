@@ -104,15 +104,6 @@ class Product(BaseMixin, SortableMixin):
 
         return getattr(self.product_images.first(), 'image', None)
 
-    @property
-    def product_main_image_prefetched(self) -> 'ProductImage':
-        """Return `ProductImage` queryset"""
-
-        if hasattr(self, '_product_main_image_prefetched'):
-            return self._product_main_image_prefetched
-
-        return self.product_images.all()
-
 
 class ProductImageQuerySet(models.QuerySet):
     """Query set 'ProductImage' model"""
