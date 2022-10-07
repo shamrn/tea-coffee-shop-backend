@@ -14,7 +14,7 @@ Requirements:
 
 Source repositories:
 - Backend — https://github.com/shamrn/tea-coffee-shop-backend
-- Mobile - 
+- Mobile - https://github.com/shamrn/tea-coffee-shop-mobile
 
 ----
 
