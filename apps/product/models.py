@@ -57,7 +57,7 @@ class Product(BaseMixin, SortableMixin):
 
     category = models.ManyToManyField(to=Category, related_name='category_products',
                                       verbose_name=_('Categories'))
-    name = models.CharField(max_length=100, verbose_name=_('Name'), db_index=True)
+    name = models.CharField(max_length=32, verbose_name=_('Name'), db_index=True)
     description = models.TextField(verbose_name=_('Description'))
     price = models.DecimalField(max_digits=8, decimal_places=2, verbose_name=_('Price'))
     volume = models.FloatField(_('Volume'), null=True)
