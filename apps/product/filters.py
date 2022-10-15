@@ -8,7 +8,6 @@ class ProductFilterSet(filters.FilterSet):
     """Product filter set"""
 
     search = filters.CharFilter(method='by_annotate_similarity', help_text='Search product')
-    type = filters.CharFilter(field_name='category__type')
 
     class Meta:
         """Meta class"""
