@@ -10,14 +10,6 @@ from extension.orm import greatest_trigram_similarity
 class Category(BaseMixin, SortableMixin):
     """Category model"""
 
-    class TypeChoice(models.IntegerChoices):
-        """Type choice"""
-
-        COFFEE: int = 0, _('Coffee')
-        TEA: int = 1, _('Tea')
-
-    type = models.PositiveSmallIntegerField(choices=TypeChoice.choices, db_index=True,
-                                            verbose_name=_('Type product'))
     name = models.CharField(max_length=32, verbose_name=_('Name'))
 
     def __str__(self):
@@ -66,9 +58,17 @@ class ProductQuerySet(models.QuerySet):
 class Product(BaseMixin, SortableMixin):
     """Product model"""
 
+    class TypeChoice(models.IntegerChoices):
+        """Type choice"""
+
+        COFFEE: int = 0, _('Coffee')
+        TEA: int = 1, _('Tea')
+
+    type = models.PositiveSmallIntegerField(choices=TypeChoice.choices, db_index=True,
+                                            verbose_name=_('Type product'))
     category = models.ManyToManyField(to=Category, related_name='category_products',
                                       verbose_name=_('Categories'))
-    name = models.CharField(max_length=32, verbose_name=_('Name'), db_index=True)
+    name = models.CharField(max_length=40, verbose_name=_('Name'), db_index=True)
     description = models.TextField(verbose_name=_('Description'))
     price = models.DecimalField(max_digits=8, decimal_places=2, verbose_name=_('Price'))
     volume = models.FloatField(_('Volume'), null=True)
