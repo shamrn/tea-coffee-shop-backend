@@ -19,7 +19,7 @@ RUN python -m pip install psycopg2-binary --no-binary psycopg2-binary
 
 # install requirements
 RUN pip install --no-cache-dir -r /app/requirements/base.txt && \
-    pip install --no-cache-dir -r /app/requirements/development.txt
+    pip install --no-cache-dir -r /app/requirements/local.txt
 
 # set working directory
 WORKDIR /app/code
