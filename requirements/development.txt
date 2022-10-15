@@ -1,10 +1,4 @@
--r base.txt
+-r local.txt
 
-# Collection of custom extensions for the Django Framework
-django-extensions==3.2.1
-
-# Web interface debug
-django-debug-toolbar==3.6.0
-
-# IPython to help you make the most out of using Python interactively
-ipython==8.5.0
+# WSGI HTTP Server for UNIX
+gunicorn==20.1.0
